@@ -37,20 +37,35 @@ function limit(element) {
     }
 }
 
+const stats = ref({
+    pts: { name: 'Points',type:'int'},
+    fga: { name: 'Field Goal Attempts',type:'int' },
+    fg: { name: 'Field Goals',type:'int' },
+    tpa: { name: 'Three Point Attempts',type:'int' },
+    tp: { name: 'Three Pointers',type:'int' },
+    orb: { name: 'Offensive Rebounds',type:'int' },
+    drb: { name: 'Defensive Rebounds',type:'int' },
+    trb: { name: 'Total Rebounds',type:'int' },
+    ast: { name: 'Assists',type:'int' },
+    fg_pct: { name: 'Field Goal Percentage',type:'float' },
+    tp_pct: { name: 'Three Point Percentage',type:'float' },
+    ft_pct: { name: 'Free Throw Percentage',type:'float' },
+});
+
 </script>
 <template>
     <div class="main-container">
         <div class="title-container d-flex justify-content-between">
             
         <h1>Popup</h1>
-        <button class="btn clear" @click="clearStyles">clear</button>
+        <button class="btn btn-primary clear" @click="clearStyles"><span>clear</span></button>
         </div>
         <!--integer input-->
         <div class="">
             <input name="pts-stat" type="number" placeholder="00" v-model="pointValue" @input="limit"/>
             <button class="btn btn-primary mx-1" @click="highlightPointsOver">Points Over</button>
         </div>
-        <StatTable></StatTable>
+        <StatTable :stats="stats"></StatTable>
     </div>
 </template>
 

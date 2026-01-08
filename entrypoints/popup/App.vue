@@ -11,6 +11,8 @@ import Popup from '@/components/Popup.vue';
 html, body, #app {
   margin: 0px;
   padding: 0px;
+
+  font-size: 14px;
 }
 </style>
 

@@ -1,12 +1,12 @@
 export default defineContentScript({
   matches: ['https://www.basketball-reference.com/players/*/*/gamelog/*/*'],
   main() {
-    console.log('Basketball Reference Content Script Loaded.');
+    console.log("BRHExt",'Basketball Reference Content Script Loaded.');
 
     const trs = Array.from(document.querySelectorAll(".stats_table tbody tr")).filter((element,idx,array) => {
         return element.hasAttribute('id');
     });
-    console.log(trs);
+    console.log("BRHExt",trs);
     browser.runtime.onMessage.addListener((message) => {
       const body = document.querySelector("body");
       if (message.command === "changeBackgroundColor") {
@@ -18,7 +18,7 @@ export default defineContentScript({
       else if (message.command === "highlightPointsOver"){
         //condition 
         //column header
-        console.log("Highlighting stat: ",message);
+        console.log("BRHExt","Highlighting stat: ",message);
         trs.forEach((tr) => {
             const statCell = tr.querySelector(`td[data-stat='${message.stat}']`);
             if (statCell !== null){
@@ -29,6 +29,15 @@ export default defineContentScript({
                     statCell.style.backgroundColor = 'orangered';
                 }
             }
+        });
+      }
+      else if (message.command === "clear"){
+        //remove background color styling
+        console.log("BRHExt","clearing styles");
+        trs.forEach((tr) => {
+          tr.querySelectorAll("td").forEach((td) =>{
+            td.removeAttribute("style");
+          });
         });
       }
     });

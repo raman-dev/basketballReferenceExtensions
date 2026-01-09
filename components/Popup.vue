@@ -41,14 +41,14 @@ const stats = ref({
     pts: { name: 'Points',type:'int'},
     fga: { name: 'Field Goal Attempts',type:'int' },
     fg: { name: 'Field Goals',type:'int' },
-    tpa: { name: 'Three Point Attempts',type:'int' },
-    tp: { name: 'Three Pointers',type:'int' },
+    fg3a: { name: '3 Point Field Goal Attempts',type:'int' },
+    fg3: { name: '3 Point Field Goals',type:'int' },
     orb: { name: 'Offensive Rebounds',type:'int' },
     drb: { name: 'Defensive Rebounds',type:'int' },
     trb: { name: 'Total Rebounds',type:'int' },
     ast: { name: 'Assists',type:'int' },
     fg_pct: { name: 'Field Goal Percentage',type:'float' },
-    tp_pct: { name: 'Three Point Percentage',type:'float' },
+    fg3_pct: { name: 'Three Point Percentage',type:'float' },
     ft_pct: { name: 'Free Throw Percentage',type:'float' },
 });
 

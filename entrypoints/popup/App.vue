@@ -12,7 +12,7 @@ html, body, #app {
   margin: 0px;
   padding: 0px;
 
-  font-size: 13px;
+  font-size: 12px;
 }
 </style>
 

@@ -38,28 +38,48 @@ export default defineContentScript({
           tr.querySelectorAll("td").forEach((td) =>{
             td.removeAttribute("style");
           });
+          tr.removeAttribute("style");
         });
       }else if (message.command === "highlightCellsOnConditions"){
         console.log("BRHExt","highlightCellsOnConditions",message);
         const conditions = message.conditions;
+        const conditionFunction = message.conditionFunc;
+        
         trs.forEach((tr) => {
+            let allTrue = null;
             conditions.forEach((condition: Object) => {
                 const statCell = tr.querySelector(`td[data-stat='${condition.stat}']`);
+                
                 if (statCell !== null){
-                    const statValue = parseFloat(statCell.innerText);
+                    const statValue = parseInt(statCell.innerText);
+                    const conditionVal = parseInt(condition.value);
                     let highlight = false;
-                    if (condition.type === 'over' && statValue >= condition.value){
+                    if (condition.type === 'over' && statValue >= conditionVal){
                         highlight = true;
-                    }else if (condition.type === 'under' && statValue <= condition.value){
+                    }else if (condition.type === 'under' && statValue <= conditionVal){
+                        highlight = true;
+                    }else if (condition.type === 'exact' && statValue === conditionVal){
                         highlight = true;
                     }
-                    if (highlight){
-                        statCell.style.backgroundColor = 'green';
-                    }else{
-                        statCell.style.backgroundColor = 'orangered';
+                    // allTrue = allTrue && highlight;
+                    if (allTrue === null){
+                      allTrue = highlight;
+                    }
+                    allTrue = allTrue && highlight;
+                    if (conditionFunction === 'or'){
+                      console.log(conditionFunction,highlight);
+                      if (highlight){
+                          statCell.style.backgroundColor = 'green';
+                      }else{
+                          statCell.style.backgroundColor = 'orangered';
+                      }
                     }
                 }
             });
+
+            if (allTrue !== null && allTrue === true && conditionFunction === 'and'){
+              tr.style.backgroundColor='lightgreen';
+            }
         });
       }
     });

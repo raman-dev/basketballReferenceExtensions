@@ -23,6 +23,7 @@ function highlightCellsOnConditions() {
     const conditions = Object.values(conditionMap.value);
     sendCommand({
         command: 'highlightCellsOnConditions',
+        conditionFunc:conditionFunc.value, 
         conditions: conditions
     });
 }   
@@ -56,7 +57,7 @@ const stats = ref({
 const selectedStat = ref('pts');
 const statValue = ref(0);
 const conditionType = ref('under');
-
+const conditionFunc = ref('and');
 const conditionMap = ref({});
 
 function addCondition() {
@@ -94,6 +95,16 @@ function getComparisonOperator(type) {
             <h2>Bball-Ref Table Highlighter</h2>
             <button class="btn btn-primary clear" @click="clearStyles"><span>clear</span></button>
         </div>
+        <div class="and-or-container mt-2">
+            <fieldset class="d-flex align-items-center">
+                <h6 class="type-label">Boolean:</h6>
+                <input type="radio" class="btn-check" name="boolean-base" id="and-option" autocomplete="off" checked @change="conditionFunc='and'">
+                <label class="btn" for="and-option">And</label>
+
+                <input type="radio" class="btn-check" name="boolean-base" id="or-option" autocomplete="off" @change="conditionFunc='or'">
+                <label class="btn" for="or-option">Or</label>
+            </fieldset>
+        </div>
         <div class="condition-builder d-flex flex-column border rounded-2">
             
             <!--radio option for over, under or exact-->
@@ -103,7 +114,7 @@ function getComparisonOperator(type) {
                 <label class="btn" for="under-option">Under</label>
 
                 <input type="radio" class="btn-check" name="options-base" id="over-option" autocomplete="off" @change="conditionType='over'">
-                <label class="btn" for="over-option">Over</label>
+                <label class="btn mx-1" for="over-option">Over</label>
 
                 <input type="radio" class="btn-check" name="options-base" id="exact-option" autocomplete="off" @change="conditionType='exact'">
                 <label class="btn" for="exact-option">Exact</label>
@@ -164,6 +175,14 @@ function getComparisonOperator(type) {
     .title-container {
         width: 100%;
     }
+    
+    fieldset h6 {
+        margin: 0px;
+        text-align: center;
+        text-transform: capitalize;
+        margin-right: 1rem;
+        margin-left: 0.6rem;
+    }
 
 
     .condition-builder{
@@ -182,13 +201,7 @@ function getComparisonOperator(type) {
             margin-left: auto;
         }
 
-        .type-label {
-            margin: 0px;
-            text-align: center;
-            text-transform: capitalize;
-            margin-right: 1rem;
-            margin-left: 0.6rem;
-        }
+        
 
         .range-label-wrapper{
             margin-left: 0.4rem;

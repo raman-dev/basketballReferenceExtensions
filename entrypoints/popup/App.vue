@@ -9,8 +9,12 @@ import Popup from '@/components/Popup.vue';
 
 <style>
 html, body, #app {
+  min-height: unset !important;
+  max-height: fit-content;
   margin: 0px;
   padding: 0px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 
   font-size: 12px;
 }

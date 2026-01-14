@@ -39,6 +39,28 @@ export default defineContentScript({
             td.removeAttribute("style");
           });
         });
+      }else if (message.command === "highlightCellsOnConditions"){
+        console.log("BRHExt","highlightCellsOnConditions",message);
+        const conditions = message.conditions;
+        trs.forEach((tr) => {
+            conditions.forEach((condition: Object) => {
+                const statCell = tr.querySelector(`td[data-stat='${condition.stat}']`);
+                if (statCell !== null){
+                    const statValue = parseFloat(statCell.innerText);
+                    let highlight = false;
+                    if (condition.type === 'over' && statValue >= condition.value){
+                        highlight = true;
+                    }else if (condition.type === 'under' && statValue <= condition.value){
+                        highlight = true;
+                    }
+                    if (highlight){
+                        statCell.style.backgroundColor = 'green';
+                    }else{
+                        statCell.style.backgroundColor = 'orangered';
+                    }
+                }
+            });
+        });
       }
     });
   },

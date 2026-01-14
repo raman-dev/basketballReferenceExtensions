@@ -19,6 +19,14 @@ function highlightPointsOver() {
     });
 }
 
+function highlightCellsOnConditions() {
+    const conditions = Object.values(conditionMap.value);
+    sendCommand({
+        command: 'highlightCellsOnConditions',
+        conditions: conditions
+    });
+}   
+
 function clearStyles() {
     sendCommand({
         command: 'clear'
@@ -124,6 +132,10 @@ function getComparisonOperator(type) {
             </ul>
         </div>
         
+        <div class="controls-container">
+            <button class="btn btn-primary" @click="highlightCellsOnConditions">show</button>
+            <button class="btn btn-secondary">hide</button>
+        </div>
     </div>
 </template>
 
@@ -131,7 +143,6 @@ function getComparisonOperator(type) {
 .main-container {
     width: 100%;
     padding: 0.6rem;
-    min-height: 400px;
     min-width: 320px;
     display: flex;
     flex-direction: column;
@@ -139,6 +150,15 @@ function getComparisonOperator(type) {
 
     button {
         text-transform: capitalize;
+    }
+
+    .controls-container {
+        padding-top: 0.6rem;
+        margin-top: auto;
+        margin-left: auto;
+        :first-child {
+            margin-right: 0.6rem;
+        }
     }
 
     .title-container {

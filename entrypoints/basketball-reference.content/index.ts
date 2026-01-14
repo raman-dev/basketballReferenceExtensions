@@ -2,7 +2,7 @@ import { storage } from "wxt/browser";
 
 function processMessage(body: HTMLBodyElement, message: Object,trs: Element[]) {
   const url = location.origin;
-  console.log (url);
+  console.log ('BRHExt','yoooo');
   if (message.command === "changeBackgroundColor") {
     if (body != null) {
       body.style.backgroundColor =
@@ -90,6 +90,7 @@ export default defineContentScript({
     browser.runtime.onMessage.addListener((message) => {
       const body = document.querySelector("body");
       if (body !== null && trs !== null){
+        console.log('BRHExt','hello from if function muddafakka')
         processMessage(body, message,trs);
       }
     });

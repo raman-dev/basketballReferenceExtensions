@@ -5,6 +5,6 @@ export default defineConfig({
   modules: ['@wxt-dev/module-vue'],
   manifest:{
     name:'basketball-reference-hint',
-    permissions: ['tabs']
+    permissions: ['tabs','storage']
   }
 });

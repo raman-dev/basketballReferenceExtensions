@@ -1,28 +1,13 @@
 import { storage } from "wxt/browser";
 
-function processMessage(body: HTMLBodyElement, message: Object,trs: Element[]) {
-  const url = location.origin;
-  console.log ('BRHExt','yoooo');
+function processMessage(body, message,trs) {
+  
+  const key = location.origin + location.pathname;
   if (message.command === "changeBackgroundColor") {
     if (body != null) {
       body.style.backgroundColor =
         "#" + Math.floor(Math.random() * 16777215).toString(16);
     }
-  } else if (message.command === "highlightPointsOver") {
-    //condition
-    //column header
-    console.log("BRHExt", "Highlighting stat: ", message);
-    trs.forEach((tr) => {
-      const statCell = tr.querySelector(`td[data-stat='${message.stat}']`);
-      if (statCell !== null) {
-        const statValue = parseInt(statCell.innerText);
-        if (statValue >= message.points) {
-          statCell.style.backgroundColor = "green";
-        } else {
-          statCell.style.backgroundColor = "orangered";
-        }
-      }
-    });
   } else if (message.command === "clear") {
     //remove background color styling
     console.log("BRHExt", "clearing styles");
@@ -39,7 +24,7 @@ function processMessage(body: HTMLBodyElement, message: Object,trs: Element[]) {
 
     trs.forEach((tr) => {
       let allTrue = null;
-      conditions.forEach((condition: Object) => {
+      conditions.forEach((condition) => {
         const statCell = tr.querySelector(`td[data-stat='${condition.stat}']`);
 
         if (statCell !== null) {
@@ -90,7 +75,6 @@ export default defineContentScript({
     browser.runtime.onMessage.addListener((message) => {
       const body = document.querySelector("body");
       if (body !== null && trs !== null){
-        console.log('BRHExt','hello from if function muddafakka')
         processMessage(body, message,trs);
       }
     });

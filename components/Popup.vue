@@ -1,6 +1,5 @@
 <script setup lang="js">
 import { ref } from 'vue';
-import StatTable from './StatTable.vue';
 const pointValue = ref(0);
 
 function sendCommand(message) {
@@ -8,14 +7,6 @@ function sendCommand(message) {
         if (tabs[0].id) {
             browser.tabs.sendMessage(tabs[0].id, message);
         }
-    });
-}
-
-function highlightPointsOver() {
-    sendCommand({
-        command: "highlightPointsOver",
-        stat: "pts",
-        points: pointValue.value
     });
 }
 

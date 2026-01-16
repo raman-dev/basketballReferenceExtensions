@@ -1,24 +1,24 @@
 import { storage } from "wxt/browser";
 
-function processMessage(body, message,trs) {
-  
-  const key = location.origin + location.pathname;
-  if (message.command === "changeBackgroundColor") {
-    if (body != null) {
-      body.style.backgroundColor =
-        "#" + Math.floor(Math.random() * 16777215).toString(16);
-    }
-  } else if (message.command === "clear") {
-    //remove background color styling
-    console.log("BRHExt", "clearing styles");
-    trs.forEach((tr) => {
-      tr.querySelectorAll("td").forEach((td) => {
-        td.removeAttribute("style");
-      });
-      tr.removeAttribute("style");
+const logTag = "BRHExt";
+function clearStyleAttributes(trs) {
+  trs.forEach((tr) => {
+    tr.querySelectorAll("td").forEach((td) => {
+      td.removeAttribute("style");
     });
+    tr.removeAttribute("style");
+  });
+}
+
+function processMessage(body, message, trs) {
+  const key = location.origin + location.pathname;
+  if (message.command === "clear") {
+    //remove background color styling
+    console.log(logTag, "clearing styles");
+    clearStyleAttributes(trs);
   } else if (message.command === "highlightCellsOnConditions") {
-    console.log("BRHExt", "highlightCellsOnConditions", message);
+    console.log(logTag, "highlightCellsOnConditions", message);
+    clearStyleAttributes(trs);
     const conditions = message.conditions;
     const conditionFunction = message.conditionFunc;
 
@@ -31,12 +31,17 @@ function processMessage(body, message,trs) {
           const statValue = parseInt(statCell.innerText);
           const conditionVal = parseInt(condition.value);
           let highlight = false;
-          if (condition.type === "over" && statValue >= conditionVal) {
-            highlight = true;
-          } else if (condition.type === "under" && statValue <= conditionVal) {
-            highlight = true;
-          } else if (condition.type === "exact" && statValue === conditionVal) {
-            highlight = true;
+
+          switch (condition.type) {
+            case "over":
+              highlight = statValue >= conditionVal;
+              break;
+            case "under":
+              highlight = statValue <= conditionVal;
+              break;
+            case "exact":
+              highlight = statValue === conditionVal;
+              break;
           }
           // allTrue = allTrue && highlight;
           if (allTrue === null) {
@@ -44,7 +49,7 @@ function processMessage(body, message,trs) {
           }
           allTrue = allTrue && highlight;
           if (conditionFunction === "or") {
-            console.log(conditionFunction, highlight);
+            // console.log(conditionFunction, highlight);
             if (highlight) {
               statCell.style.backgroundColor = "green";
             } else {
@@ -63,19 +68,19 @@ function processMessage(body, message,trs) {
 export default defineContentScript({
   matches: ["https://www.basketball-reference.com/players/*/*/gamelog/*/*"],
   main() {
-    console.log("BRHExt", "Basketball Reference Content Script Loaded.");
+    console.log(logTag, "Basketball Reference Content Script Loaded.");
 
     const trs = Array.from(
       document.querySelectorAll(".stats_table tbody tr")
     ).filter((element, idx, array) => {
       return element.hasAttribute("id");
     });
-    console.log("BRHExt", trs);
+    console.log(logTag, trs);
 
     browser.runtime.onMessage.addListener((message) => {
       const body = document.querySelector("body");
-      if (body !== null && trs !== null){
-        processMessage(body, message,trs);
+      if (body !== null && trs !== null) {
+        processMessage(body, message, trs);
       }
     });
   },

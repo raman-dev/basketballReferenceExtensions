@@ -104,7 +104,7 @@ export default defineContentScript({
     const storedData = await getSessionData(key);
 
     console.log(logTag,"storedData => ",storedData);
-    if (storedData !== undefined && storedData !== null){
+    if (storedData !== undefined && storedData !== null && Object.keys(storedData).length > 0) {
       let message = null;
       if ("key" in storedData){
         message = storedData.key[key];

@@ -1,5 +1,3 @@
-import { storage } from "wxt/browser";
-
 const logTag = "BRHExt";
 function clearStyleAttributes(trs) {
   trs.forEach((tr) => {
@@ -19,6 +17,7 @@ function processMessage(body, message, trs) {
   } else if (message.command === "highlightCellsOnConditions") {
     console.log(logTag, "highlightCellsOnConditions", message);
     clearStyleAttributes(trs);
+
     const conditions = message.conditions;
     const conditionFunction = message.conditionFunc;
 
@@ -66,8 +65,9 @@ function processMessage(body, message, trs) {
   }
 }
 export default defineContentScript({
-  matches: ["https://www.basketball-reference.com/players/*/*/gamelog/*/*"],
-  main() {
+  matches: ["https://www.basketball-reference.com/players/*/*/gamelog/*/"],
+  async main(ctx) {
+
     console.log(logTag, "Basketball Reference Content Script Loaded.");
 
     const trs = Array.from(
@@ -75,8 +75,19 @@ export default defineContentScript({
     ).filter((element, idx, array) => {
       return element.hasAttribute("id");
     });
-    console.log(logTag, trs);
 
+    console.log(logTag, trs);
+    //get path from page
+    const key = document.location.pathname;
+    console.log(logTag,"storage-key => ",key);
+    // const sessionMessage = await browser.storage.session.get(`session:${key}`);
+    console.log(logTag,'Context check:', {
+      world: typeof ctx !== 'undefined' ? ctx.world : 'unknown',
+      browser: typeof browser,
+      chromeRuntime: chrome?.runtime?.id,
+    });
+
+    // console.log(logTag,sessionMessage);
     browser.runtime.onMessage.addListener((message) => {
       const body = document.querySelector("body");
       if (body !== null && trs !== null) {

@@ -25,14 +25,6 @@ function clearStyles() {
     });
 }
 
-function limit(element) {
-    const input = element.target;
-    if (input.value.length > 2) {
-        input.value = input.value.slice(0, 2);
-        pointValue.value = Number(input.value);
-    }
-}
-
 const stats = ref({
     pts: { name: 'Points', type: 'int', value: 0 },
     fga: { name: 'Field Goal Attempts', type: 'int', value: 0 },

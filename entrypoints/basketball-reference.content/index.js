@@ -1,4 +1,23 @@
 const logTag = "BRHExt";
+
+async function getSessionData(key) {
+  let data = null;
+  await browser.runtime.sendMessage({
+    command: "storage.get",
+    key: key,
+  }).then ((response) => {
+    data = response;
+  });
+  return data;
+}
+
+async function setSessionData(key, data) {
+  return await browser.runtime.sendMessage({
+    command: "storage.set",
+    key: key,
+    data: data,
+  });
+}
 function clearStyleAttributes(trs) {
   trs.forEach((tr) => {
     tr.querySelectorAll("td").forEach((td) => {
@@ -9,11 +28,13 @@ function clearStyleAttributes(trs) {
 }
 
 function processMessage(body, message, trs) {
-  const key = location.origin + location.pathname;
+  const key = location.pathname;
   if (message.command === "clear") {
     //remove background color styling
     console.log(logTag, "clearing styles");
     clearStyleAttributes(trs);
+    
+    setSessionData(key, { command: "clear" });
   } else if (message.command === "highlightCellsOnConditions") {
     console.log(logTag, "highlightCellsOnConditions", message);
     clearStyleAttributes(trs);
@@ -62,6 +83,7 @@ function processMessage(body, message, trs) {
         tr.style.backgroundColor = "lightgreen";
       }
     });
+    setSessionData(key, message);
   }
 }
 export default defineContentScript({
@@ -79,15 +101,19 @@ export default defineContentScript({
     console.log(logTag, trs);
     //get path from page
     const key = document.location.pathname;
-    console.log(logTag,"storage-key => ",key);
-    // const sessionMessage = await browser.storage.session.get(`session:${key}`);
-    console.log(logTag,'Context check:', {
-      world: typeof ctx !== 'undefined' ? ctx.world : 'unknown',
-      browser: typeof browser,
-      chromeRuntime: chrome?.runtime?.id,
-    });
+    const storedData = await getSessionData(key);
 
-    // console.log(logTag,sessionMessage);
+    console.log(logTag,"storedData => ",storedData);
+    if (storedData !== undefined && storedData !== null){
+      let message = null;
+      if ("key" in storedData){
+        message = storedData.key[key];
+      }
+      else{
+        message = storedData[key];
+      }
+      processMessage(document.querySelector("body"), message, trs);
+    }
     browser.runtime.onMessage.addListener((message) => {
       const body = document.querySelector("body");
       if (body !== null && trs !== null) {
